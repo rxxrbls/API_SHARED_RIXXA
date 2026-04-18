@@ -1,0 +1,51 @@
+name: SDK Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish to private registry
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node for private registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          scope: '@apicenter'
+          registry-url: ${{ vars.NPM_REGISTRY_URL }}
+
+      - name: Guard private registry target
+        run: |
+          if [ -z "${{ vars.NPM_REGISTRY_URL }}" ]; then
+            echo "NPM_REGISTRY_URL is required."
+            exit 1
+          fi
+
+          if echo "${{ vars.NPM_REGISTRY_URL }}" | grep -Eq 'registry\.npmjs\.org/?$'; then
+            echo "Publishing to the public npm registry is blocked for this SDK."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify private SDK policy
+        run: npm run verify:private-sdk
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish package
+        run: npm publish --access restricted
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

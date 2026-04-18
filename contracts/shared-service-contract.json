@@ -1,0 +1,40 @@
+{
+  "version": "2026-04-17",
+  "sharedServices": [
+    {
+      "serviceId": "payment",
+      "manifest": "shared-services/manifests/payment-manifest.json",
+      "wrappers": [
+        "paymentCreateCheckoutSession",
+        "paymentGetCheckoutSession",
+        "paymentCreateRefund"
+      ]
+    },
+    {
+      "serviceId": "email",
+      "manifest": "shared-services/manifests/email-manifest.json",
+      "wrappers": [
+        "emailSend",
+        "emailGetStatus"
+      ]
+    },
+    {
+      "serviceId": "sms",
+      "manifest": "shared-services/manifests/sms-manifest.json",
+      "wrappers": [
+        "smsSend",
+        "smsGetStatus"
+      ]
+    }
+  ],
+  "kafkaGovernance": {
+    "requiredScopes": [
+      "external:kafka:read",
+      "external:kafka:write"
+    ],
+    "wrappers": [
+      "kafkaGetGovernanceCatalog",
+      "kafkaPublish"
+    ]
+  }
+}

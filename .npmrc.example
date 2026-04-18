@@ -1,0 +1,7 @@
+# Copy this file to .npmrc in any tribe repository that consumes @apicenter/sdk.
+# Replace placeholders with your private registry values.
+# - NPM_REGISTRY_URL example: https://npm.pkg.github.com
+# - NPM_REGISTRY_HOST example: npm.pkg.github.com
+@apicenter:registry=${NPM_REGISTRY_URL}
+//${NPM_REGISTRY_HOST}/:_authToken=${NPM_TOKEN}
+always-auth=true

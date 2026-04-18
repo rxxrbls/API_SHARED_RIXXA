@@ -1,0 +1,45 @@
+{
+  "name": "@apicenter/sdk",
+  "version": "0.1.0",
+  "description": "Shared APICenter SDK for tribe-to-tribe, shared service, and external API calls via the gateway",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "check:contracts": "node scripts/check-contract-compatibility.js",
+    "verify:private-sdk": "node scripts/verify-private-sdk.js",
+    "pack:check": "npm pack --dry-run",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "ci": "npm run verify:private-sdk && npm run check:contracts && npm run typecheck && npm run test && npm run build && npm run pack:check",
+    "prepublishOnly": "npm run verify:private-sdk && npm run clean && npm run build"
+  },
+  "keywords": [
+    "api-center",
+    "sdk",
+    "gateway",
+    "tribe"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.4.0",
+    "vitest": "^2.1.9"
+  }
+}
