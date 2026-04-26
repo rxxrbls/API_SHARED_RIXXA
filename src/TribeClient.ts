@@ -29,6 +29,13 @@ import {
   KafkaGovernanceCatalog,
   KafkaGovernedPublishRequest,
   KafkaGovernedPublishResponse,
+  GoogleAuthorizationUrlRequest,
+  GoogleAuthorizationUrlResponse,
+  GoogleLogoutRequest,
+  GoogleLogoutResponse,
+  GoogleOAuthTokenResponse,
+  GoogleTokenExchangeRequest,
+  GoogleTokenRefreshRequest,
   ServiceDiscoveryEntry,
   ServiceScopeCatalog,
   ServiceType,
@@ -53,6 +60,7 @@ const VALID_SERVICE_STATUSES = new Set<ServiceDiscoveryEntry['status']>([
 const PAYMENT_SHARED_SERVICE_ID = 'payment';
 const EMAIL_SHARED_SERVICE_ID = 'email';
 const SMS_SHARED_SERVICE_ID = 'sms';
+const GAUTH_SHARED_SERVICE_ID = 'gauth';
 
 function isRetryable(error: AxiosError): boolean {
   if (error.response && RETRYABLE_STATUSES.has(error.response.status)) {
@@ -365,6 +373,66 @@ export class TribeClient {
       {
         ...options,
         method: options?.method ?? 'GET',
+      },
+    );
+  }
+
+  async gauthGetAuthorizationUrl(
+    payload: GoogleAuthorizationUrlRequest,
+    options?: AxiosRequestConfig,
+  ): Promise<GoogleAuthorizationUrlResponse> {
+    return this.callSharedService<GoogleAuthorizationUrlResponse>(
+      GAUTH_SHARED_SERVICE_ID,
+      '/oauth/authorize',
+      {
+        ...options,
+        method: options?.method ?? 'POST',
+        data: payload,
+      },
+    );
+  }
+
+  async gauthExchangeCode(
+    payload: GoogleTokenExchangeRequest,
+    options?: AxiosRequestConfig,
+  ): Promise<GoogleOAuthTokenResponse> {
+    return this.callSharedService<GoogleOAuthTokenResponse>(
+      GAUTH_SHARED_SERVICE_ID,
+      '/oauth/token',
+      {
+        ...options,
+        method: options?.method ?? 'POST',
+        data: payload,
+      },
+    );
+  }
+
+  async gauthRefreshToken(
+    payload: GoogleTokenRefreshRequest,
+    options?: AxiosRequestConfig,
+  ): Promise<GoogleOAuthTokenResponse> {
+    return this.callSharedService<GoogleOAuthTokenResponse>(
+      GAUTH_SHARED_SERVICE_ID,
+      '/oauth/token/refresh',
+      {
+        ...options,
+        method: options?.method ?? 'POST',
+        data: payload,
+      },
+    );
+  }
+
+  async gauthLogout(
+    payload: GoogleLogoutRequest,
+    options?: AxiosRequestConfig,
+  ): Promise<GoogleLogoutResponse> {
+    return this.callSharedService<GoogleLogoutResponse>(
+      GAUTH_SHARED_SERVICE_ID,
+      '/oauth/logout',
+      {
+        ...options,
+        method: options?.method ?? 'POST',
+        data: payload,
       },
     );
   }

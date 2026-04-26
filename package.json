@@ -12,6 +12,7 @@
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "check:contracts": "node scripts/check-contract-compatibility.js",
+    "test:gauth": "node scripts/test-gauth-flow.js",
     "verify:private-sdk": "node scripts/verify-private-sdk.js",
     "pack:check": "npm pack --dry-run",
     "test": "vitest run",

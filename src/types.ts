@@ -255,6 +255,54 @@ export interface SharedMessageStatus {
   failureReason?: string;
 }
 
+export interface GoogleAuthorizationUrlRequest {
+  redirectUri: string;
+  state?: string;
+  scopes?: string[];
+  codeChallenge?: string;
+  codeChallengeMethod?: 'S256' | 'plain';
+  accessType?: 'online' | 'offline';
+  prompt?: string;
+  loginHint?: string;
+  includeGrantedScopes?: boolean;
+}
+
+export interface GoogleAuthorizationUrlResponse {
+  authorizationUrl: string;
+  state?: string;
+  expiresAt?: string;
+}
+
+export interface GoogleTokenExchangeRequest {
+  code: string;
+  redirectUri: string;
+  codeVerifier?: string;
+}
+
+export interface GoogleTokenRefreshRequest {
+  refreshToken: string;
+}
+
+export interface GoogleLogoutRequest {
+  token?: string;
+  refreshToken?: string;
+  idTokenHint?: string;
+}
+
+export interface GoogleOAuthTokenResponse {
+  accessToken: string;
+  expiresIn: number;
+  tokenType?: string;
+  scope?: string;
+  idToken?: string;
+  refreshToken?: string | null;
+}
+
+export interface GoogleLogoutResponse {
+  revoked: boolean;
+  provider: 'google';
+}
+
 export interface KafkaGovernanceCatalog {
   tenantTopicPrefix: string;
   recommendedTopics: string[];

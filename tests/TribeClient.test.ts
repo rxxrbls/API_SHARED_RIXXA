@@ -290,6 +290,53 @@ describe('TribeClient', () => {
     );
   });
 
+  it('should call Google OAuth token exchange endpoint through shared services namespace', async () => {
+    const client = new TribeClient({
+      gatewayUrl: 'http://gateway.local',
+      tribeId: 'orders-service',
+      secret: 'secret',
+    });
+
+    const post = vi.fn().mockResolvedValue({
+      data: {
+        data: {
+          accessToken: 'access-token',
+          refreshToken: 'refresh-token',
+          expiresIn: 3600,
+        },
+      },
+    });
+
+    const request = vi.fn().mockResolvedValue({
+      data: {
+        success: true,
+        data: {
+          accessToken: 'google-access-token',
+          refreshToken: 'google-refresh-token',
+          expiresIn: 3600,
+          tokenType: 'Bearer',
+        },
+      },
+    });
+
+    (client as unknown as { http: { post: typeof post; request: typeof request } }).http = {
+      post,
+      request,
+    };
+
+    await client.gauthExchangeCode({
+      code: 'authorization-code',
+      redirectUri: 'http://localhost:5173/auth/google/callback',
+    });
+
+    expect(request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: '/api/v1/shared/gauth/oauth/token',
+        method: 'POST',
+      }),
+    );
+  });
+
   it('should call governed Kafka publish endpoint through AP Center governance API', async () => {
     const client = new TribeClient({
       gatewayUrl: 'http://gateway.local',

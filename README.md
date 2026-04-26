@@ -111,6 +111,33 @@ await client.paymentCreateRefund('pay_123', {
 These wrappers intentionally abstract provider-specific details so tribes stay
 decoupled from PayMongo API surface changes.
 
+### Google OAuth wrapper helpers
+
+Google login can be routed through AP Center shared services using `gauth` wrappers:
+
+```ts
+const authUrl = await client.gauthGetAuthorizationUrl({
+  redirectUri: 'https://app.example.com/auth/google/callback',
+  scopes: ['openid', 'email', 'profile'],
+  accessType: 'offline',
+});
+
+const tokens = await client.gauthExchangeCode({
+  code: '<authorization_code>',
+  redirectUri: 'https://app.example.com/auth/google/callback',
+});
+
+await client.gauthRefreshToken({
+  refreshToken: tokens.refreshToken || '',
+});
+
+await client.gauthLogout({
+  refreshToken: tokens.refreshToken || undefined,
+});
+```
+
+This keeps Google provider handling centralized in platform-owned shared service logic.
+
 ## SDK Boundary
 
 This package is the only SDK source of truth for tribe consumers.
@@ -148,6 +175,10 @@ For payment runtime scaffolding before provider API finalization, use:
 
 - `shared-services/payment-gateway-draft/`
 
+For Google OAuth runtime integration, use:
+
+- `shared-services/gauth-gateway/`
+
 Contract snapshot used by CI:
 
 - `contracts/shared-service-contract.json`
@@ -157,6 +188,17 @@ Run contract compatibility checks locally:
 ```bash
 npm run check:contracts
 ```
+
+Run Google OAuth flow smoke tests (against `gauth-gateway`):
+
+```bash
+npm run test:gauth
+```
+
+To run the full code exchange/refresh/logout sequence, provide:
+
+- `GOOGLE_AUTHORIZATION_CODE` (copied from callback URL after consent)
+- optional `GOOGLE_REFRESH_TOKEN` (if your app does not receive a new refresh token)
 
 ## Required Runtime Variables for Consumers
 

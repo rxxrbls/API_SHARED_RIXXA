@@ -1,5 +1,5 @@
 {
-  "version": "2026-04-17",
+  "version": "2026-04-26",
   "sharedServices": [
     {
       "serviceId": "payment",
@@ -24,6 +24,16 @@
       "wrappers": [
         "smsSend",
         "smsGetStatus"
+      ]
+    },
+    {
+      "serviceId": "gauth",
+      "manifest": "shared-services/manifests/gauth-manifest.json",
+      "wrappers": [
+        "gauthGetAuthorizationUrl",
+        "gauthExchangeCode",
+        "gauthRefreshToken",
+        "gauthLogout"
       ]
     }
   ],
