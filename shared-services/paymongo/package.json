@@ -1,8 +1,8 @@
 {
-  "name": "payment-gateway-draft",
+  "name": "paymongo-gateway",
   "version": "0.1.0",
   "private": true,
-  "description": "Draft mock shared payment gateway runtime for AP Center contract integration",
+  "description": "Official PayMongo shared gateway runtime for AP Center integration",
   "main": "src/server.js",
   "scripts": {
     "dev": "node src/server.js",

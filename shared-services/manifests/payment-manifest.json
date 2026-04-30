@@ -4,7 +4,7 @@
   "name": "Payment Gateway",
   "baseUrl": "http://payment-service:4010",
   "requiredScopes": ["payment:charge", "payment:refund"],
-  "exposes": ["/charge", "/refund", "/status", "/webhooks"],
+  "exposes": ["/checkout/sessions", "/checkout/sessions/:id", "/payments/:id/refunds", "/webhooks"],
   "consumes": [],
   "healthCheck": "/health",
   "version": "1.0.0",

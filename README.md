@@ -173,7 +173,7 @@ should stay runtime-only and must not store shared-service manifests or implemen
 
 For payment runtime scaffolding before provider API finalization, use:
 
-- `shared-services/payment-gateway-draft/`
+- `shared-services/paymongo/` (Official PayMongo shared gateway)
 
 For Google OAuth runtime integration, use:
 

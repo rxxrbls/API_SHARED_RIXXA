@@ -37,4 +37,4 @@ and shared service runtime teams.
 
 The initial runtime draft is under:
 
-- `shared-services/payment-gateway-draft/`
+- `shared-services/paymongo/` (Official PayMongo shared gateway)
