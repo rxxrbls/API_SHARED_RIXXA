@@ -247,6 +247,41 @@ export interface SmsSendResponse {
   status: 'queued' | 'sent' | 'failed';
 }
 
+export interface OtpGenerateRequest {
+  target: string;
+  channel: 'sms' | 'email';
+  length?: number;
+  expiresInSeconds?: number;
+}
+
+export interface OtpGenerateResponse {
+  otpId: string;
+  expiresAt: string;
+  channel: string;
+  target: string;
+  /** Only present in mock/dev mode */
+  code?: string;
+}
+
+export interface OtpVerifyRequest {
+  otpId: string;
+  code: string;
+}
+
+export interface OtpVerifyResponse {
+  valid: boolean;
+  target: string;
+  channel: string;
+}
+
+export interface OtpStatusResponse {
+  otpId: string;
+  status: 'pending' | 'used' | 'expired';
+  target: string;
+  channel: string;
+  expiresAt: string;
+}
+
 export interface SharedMessageStatus {
   messageId: string;
   provider: string;

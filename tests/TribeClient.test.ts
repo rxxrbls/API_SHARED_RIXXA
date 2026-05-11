@@ -570,4 +570,56 @@ describe('TribeClient', () => {
 
     expect(catalog.allScopes).toEqual(['messages:send', 'users:read']);
   });
+
+  it('should call geofencing check endpoint through external namespace', async () => {
+    const client = new TribeClient({
+      gatewayUrl: 'http://gateway.local',
+      tribeId: 'orders-service',
+      secret: 'secret',
+    });
+
+    const post = vi.fn().mockResolvedValue({ data: { data: { accessToken: 'token' } } });
+    const request = vi.fn().mockResolvedValue({
+      data: { success: true, data: { inside: true, distanceDetails: [] } },
+    });
+
+    (client as unknown as { http: { post: typeof post; request: typeof request } }).http = { post, request };
+
+    const result = await client.geofenceCheck({ latitude: 14.5995, longitude: 120.9842 });
+    
+    expect(result).toEqual({ inside: true, distanceDetails: [] });
+    expect(request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: '/api/v1/external/geofencing/v1/geofences/check',
+        method: 'POST',
+        data: { latitude: 14.5995, longitude: 120.9842 }
+      })
+    );
+  });
+
+  it('should call geotag resolve endpoint through external namespace', async () => {
+    const client = new TribeClient({
+      gatewayUrl: 'http://gateway.local',
+      tribeId: 'orders-service',
+      secret: 'secret',
+    });
+
+    const post = vi.fn().mockResolvedValue({ data: { data: { accessToken: 'token' } } });
+    const request = vi.fn().mockResolvedValue({
+      data: { success: true, data: { formattedAddress: 'Manila, Philippines' } },
+    });
+
+    (client as unknown as { http: { post: typeof post; request: typeof request } }).http = { post, request };
+
+    const result = await client.geotagResolve({ ip: '122.3.4.5' });
+    
+    expect(result).toEqual({ formattedAddress: 'Manila, Philippines' });
+    expect(request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: '/api/v1/external/geotagging/v1/geotags/resolve',
+        method: 'POST',
+        data: { ip: '122.3.4.5' }
+      })
+    );
+  });
 });

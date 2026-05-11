@@ -1,0 +1,26 @@
+# Source (shipped in files[] but unnecessary for consumers who only need dist/)
+# If you want to exclude source, remove src/ from package.json "files" array.
+
+# Test files
+*.spec.ts
+*.test.ts
+
+# Build config
+tsconfig.json
+vitest.config.ts
+
+# Local environment
+.env*
+.npmrc.example
+
+# Dev scripts and docs
+scripts/
+docs/
+shared-services/
+contracts/
+
+# CI
+.github/
+
+# Node modules (always excluded by npm, listed for clarity)
+node_modules/

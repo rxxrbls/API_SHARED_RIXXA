@@ -1,0 +1,9 @@
+{
+  "name": "@apicenter/otp-gateway",
+  "version": "1.0.0",
+  "description": "OTP generation and verification gateway",
+  "main": "src/server.js",
+  "scripts": { "start": "node src/server.js" },
+  "dependencies": { "express": "^4.18.2" },
+  "engines": { "node": ">=18" }
+}

@@ -1,11 +1,12 @@
 {
   "name": "@apicenter/sdk",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Shared APICenter SDK for tribe-to-tribe, shared service, and external API calls via the gateway",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
+    "dist/",
+    "src/",
     "README.md"
   ],
   "scripts": {
@@ -29,7 +30,7 @@
   ],
   "license": "MIT",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "engines": {
     "node": ">=18.0.0"

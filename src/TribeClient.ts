@@ -19,6 +19,11 @@ import {
 import {
   EmailSendRequest,
   EmailSendResponse,
+  OtpGenerateRequest,
+  OtpGenerateResponse,
+  OtpStatusResponse,
+  OtpVerifyRequest,
+  OtpVerifyResponse,
   PaymentCheckoutCreateRequest,
   PaymentCheckoutSession,
   PaymentRefund,
@@ -61,6 +66,7 @@ const PAYMENT_SHARED_SERVICE_ID = 'payment';
 const EMAIL_SHARED_SERVICE_ID = 'email';
 const SMS_SHARED_SERVICE_ID = 'sms';
 const GAUTH_SHARED_SERVICE_ID = 'gauth';
+const OTP_SHARED_SERVICE_ID = 'otp';
 
 function isRetryable(error: AxiosError): boolean {
   if (error.response && RETRYABLE_STATUSES.has(error.response.status)) {
@@ -150,7 +156,7 @@ interface TokenPayload {
 }
 
 export class TribeClient {
-  static readonly SDK_VERSION = '0.1.0';
+  static readonly SDK_VERSION = '1.0.0';
 
   private readonly http: AxiosInstance;
   private readonly tribeId: string;
@@ -434,6 +440,39 @@ export class TribeClient {
         method: options?.method ?? 'POST',
         data: payload,
       },
+    );
+  }
+
+  async otpGenerate(
+    payload: OtpGenerateRequest,
+    options?: AxiosRequestConfig,
+  ): Promise<OtpGenerateResponse> {
+    return this.callSharedService<OtpGenerateResponse>(
+      OTP_SHARED_SERVICE_ID,
+      '/generate',
+      { ...options, method: 'POST', data: payload },
+    );
+  }
+
+  async otpVerify(
+    payload: OtpVerifyRequest,
+    options?: AxiosRequestConfig,
+  ): Promise<OtpVerifyResponse> {
+    return this.callSharedService<OtpVerifyResponse>(
+      OTP_SHARED_SERVICE_ID,
+      '/verify',
+      { ...options, method: 'POST', data: payload },
+    );
+  }
+
+  async otpStatus(
+    otpId: string,
+    options?: AxiosRequestConfig,
+  ): Promise<OtpStatusResponse> {
+    return this.callSharedService<OtpStatusResponse>(
+      OTP_SHARED_SERVICE_ID,
+      `/status/${otpId}`,
+      { ...options, method: 'GET' },
     );
   }
 

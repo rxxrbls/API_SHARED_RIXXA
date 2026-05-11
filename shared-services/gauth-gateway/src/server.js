@@ -1,5 +1,7 @@
 const express = require('express');
 const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const app = express();
 const port = Number(process.env.PORT || 4013);
@@ -260,8 +262,7 @@ app.post('/oauth/logout', async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        revoked: true,
-        provider: 'google',
+        success: true,
       },
       meta: apiMeta(),
     });
@@ -270,7 +271,57 @@ app.post('/oauth/logout', async (req, res) => {
   }
 });
 
+async function registerWithGateway() {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '../../manifests/gauth-manifest.json'), 'utf8'),
+  );
+  manifest.baseUrl = process.env.SERVICE_BASE_URL || manifest.baseUrl;
+
+  const apiCenterUrl = process.env.API_CENTER_URL || 'http://localhost:3000';
+  const registerUrl = `${apiCenterUrl}/api/v1/registry/register`;
+
+  const MAX_ATTEMPTS = 6;
+  const BASE_DELAY_MS = 3000;
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetch(registerUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Platform-Secret': process.env.PLATFORM_ADMIN_SECRET || '',
+        },
+        body: JSON.stringify(manifest),
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP ${response.status}: ${text}`);
+      }
+      // eslint-disable-next-line no-console
+      console.log(`[gauth] registered with api-center`);
+      return;
+    } catch (err) {
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1); // 3s, 6s, 12s, 24s, 48s, 96s
+      if (attempt < MAX_ATTEMPTS) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[gauth] registration attempt ${attempt} failed, retrying in ${delay}ms:`,
+          err.message,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[gauth] WARN: all ${MAX_ATTEMPTS} registration attempts failed:`,
+          err.message,
+        );
+      }
+    }
+  }
+}
+
 app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`[gauth-gateway] listening on port ${port}`);
+  registerWithGateway();
 });

@@ -1,0 +1,15 @@
+{
+  "name": "@apicenter/sms-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Platform SMS gateway (mock implementation)",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

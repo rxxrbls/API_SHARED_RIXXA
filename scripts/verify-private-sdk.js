@@ -13,19 +13,20 @@ if (typeof packageJson.name !== 'string' || !packageJson.name.startsWith('@apice
 }
 
 if (packageJson.private === true) {
-  violations.push('Package must be publishable to the private registry, so package.json private=true is not allowed.');
+  violations.push('Package must be publishable, so package.json private=true is not allowed.');
 }
 
-if (packageJson.publishConfig?.access !== 'restricted') {
-  violations.push('publishConfig.access must be set to "restricted" for private SDK publishing.');
+const allowedAccessValues = new Set(['restricted', 'public']);
+if (!allowedAccessValues.has(packageJson.publishConfig?.access)) {
+  violations.push('publishConfig.access must be set to "restricted" (private registry) or "public" (npm public registry).');
 }
 
 if (violations.length > 0) {
-  console.error('\nPrivate SDK guard failed:\n');
+  console.error('\nSDK publish guard failed:\n');
   for (const violation of violations) {
     console.error(` - ${violation}`);
   }
   process.exit(1);
 }
 
-console.log('Private SDK guard passed.');
+console.log('SDK publish guard passed.');
